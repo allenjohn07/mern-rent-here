@@ -1,0 +1,86 @@
+[
+    {
+        "id": 1,
+        "title": "Sunny Villa",
+        "rent": "Average Rent $1,800 per month",
+        "status": "Available",
+        "features": "3 bedrooms, 2 bathrooms, 1500 sqft"
+    },
+    {
+        "id": 2,
+        "title": "Green Meadows",
+        "rent": "Average Rent $1,500 per month",
+        "status": "Available",
+        "features": "2 bedrooms, 2 bathrooms, 1200 sqft"
+    },
+    {
+        "id": 3,
+        "title": "Urban Nest",
+        "rent": "Average Rent $2,500 per month",
+        "status": "Available",
+        "features": "2 bedrooms, 1 bathroom, 1000 sqft"
+    },
+    {
+        "id": 4,
+        "title": "Seaside Cottage",
+        "rent": "Average Rent $2,200 per month",
+        "status": "Available",
+        "features": "3 bedrooms, 2 bathrooms, 1400 sqft"
+    },
+    {
+        "id": 5,
+        "title": "Mountain Retreat",
+        "rent": "Average Rent $2,000 per month",
+        "status": "Available",
+        "features": "4 bedrooms, 3 bathrooms, 2000 sqft"
+    },
+    {
+        "id": 6,
+        "title": "Suburban Bliss",
+        "rent": "Average Rent $1,900 per month",
+        "status": "Available",
+        "features": "3 bedrooms, 2 bathrooms, 1600 sqft"
+    },
+    {
+        "id": 7,
+        "title": "Countryside Haven",
+        "rent": "Average Rent $1,700 per month",
+        "status": "Available",
+        "features": "3 bedrooms, 2 bathrooms, 1300 sqft"
+    },
+    {
+        "id": 8,
+        "title": "Downtown Loft",
+        "rent": "Average Rent $2,500 per month",
+        "status": "Available",
+        "features": "2 bedrooms, 2 bathrooms, 1100 sqft"
+    },
+    {
+        "id": 9,
+        "title": "Lakeside Lodge",
+        "rent": "Average Rent $2,600 per month",
+        "status": "Available",
+        "features": "4 bedrooms, 3 bathrooms, 2100 sqft"
+    },
+    {
+        "id": 10,
+        "title": "Lakeside Lodge",
+        "rent": "Average Rent $2,600 per month",
+        "status": "Available",
+        "features": "4 bedrooms, 3 bathrooms, 2100 sqft"
+    },
+    {
+        "id": 11,
+        "title": "Lakeside Lodge",
+        "rent": "Average Rent $2,600 per month",
+        "status": "Available",
+        "features": "4 bedrooms, 3 bathrooms, 2100 sqft"
+    },
+    {
+        "id": 12,
+        "title": "Lakeside Lodge",
+        "rent": "Average Rent $2,600 per month",
+        "status": "Available",
+        "features": "4 bedrooms, 3 bathrooms, 2100 sqft"
+    }
+]

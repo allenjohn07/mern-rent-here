@@ -1,0 +1,28 @@
+.filterforbig{
+    display: block;
+}
+
+.filter-toggle-icon{
+    display: none;
+}
+
+.filter-container{
+    cursor: default;
+}
+
+
+@media (max-width:1200px) {
+    .filterforbig{
+        display: none;
+    }
+
+    .filter-toggle-icon{
+        display: block;
+    }
+
+    .filter-container{
+        cursor: pointer;
+    }
+
+    
+}

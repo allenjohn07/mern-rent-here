@@ -1,0 +1,13 @@
+.main-div{
+    height: 100vh;
+}
+
+.hover-underline:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 1200px) {
+    .search-input-div{
+        margin-top: 10px;
+    }
+}
