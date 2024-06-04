@@ -1,7 +1,6 @@
 import { createBrowserRouter } from 'react-router-dom';
 import App from '../App';
 import Home from '../Pages/Home';
-import About from '../Pages/About';
 import CreateHouse from '../Pages/CreateHouse';
 import MyHouses from '../Pages/MyHouses';
 import RentEstimate from '../Pages/RentEstimate';
@@ -10,7 +9,7 @@ import HouseDetails from '../Pages/HouseDetails';
 
 const fetchHouseById = async ({ params }) => {
     try {
-        const response = await fetch(`http://localhost:5000/all-houses/${params.id}`);
+        const response = await fetch(`https://mern-rent-here.onrender.com/all-houses/${params.id}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }

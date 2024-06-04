@@ -19,7 +19,7 @@ const UpdateHouse = () => {
     //async function to post house
     async function postHouse(data) {
         try {
-            const response = await fetch(`http://localhost:5000/update-house/${id}`, {
+            const response = await fetch(`https://mern-rent-here.onrender.com/update-house/${id}`, {
                 method: "PATCH",
                 headers: {
                     'content-type': 'application/json'

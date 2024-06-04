@@ -7,7 +7,6 @@ import Swal from 'sweetalert2'
 
 const MyHouses = () => {
 
-    // const email = "allenjohnkonthuruthy@gmail.com"
     const [email, setEmail] = useState("")
     const [houses, setHouses] = useState([])
     const [searchText, setSearchText] = useState("")
@@ -36,7 +35,7 @@ const MyHouses = () => {
 
     //fetchHouse function written outside but called inside the useEffect hook
     async function fetchHousesbyEmail() {
-        const response = await fetch(`http://localhost:5000/my-houses/${email}`)
+        const response = await fetch(`https://mern-rent-here.onrender.com/my-houses/${email}`)
         const data = await response.json()
         setHouses(data)
         setIsLoading(false)
@@ -62,7 +61,7 @@ const MyHouses = () => {
     //function to delete a house
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`http://localhost:5000/delete-house/${id}`, {
+            const response = await fetch(`https://mern-rent-here.onrender.com/delete-house/${id}`, {
                 method: 'DELETE', // Ensure the correct HTTP method is used
                 headers: {
                     'Content-Type': 'application/json',

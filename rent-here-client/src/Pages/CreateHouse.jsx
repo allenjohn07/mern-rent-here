@@ -17,7 +17,7 @@ const CreateHouse = () => {
     //async function to post house
     async function postHouse(data) {
         try {
-            const response = await fetch("http://localhost:5000/post-house", {
+            const response = await fetch("https://mern-rent-here.onrender.com/post-house", {
                 method: "POST",
                 headers: {
                     'content-type': 'application/json'

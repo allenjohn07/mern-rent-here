@@ -11,7 +11,6 @@ const RentEstimate = () => {
             const response = await fetch("rent.json");
             const data = await response.json();
             setRent(data);
-            console.log(data);
         };
 
         fetchData();

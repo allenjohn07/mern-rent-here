@@ -14,7 +14,7 @@ const HouseDetails = () => {
         const fetchHouse = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`http://localhost:5000/all-houses/${id}`);
+                const response = await fetch(`https://mern-rent-here.onrender.com/all-houses/${id}`);
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
                 }

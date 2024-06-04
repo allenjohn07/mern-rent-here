@@ -1,5 +1,5 @@
 import React from 'react'
-import { FiSearch, FiMapPin } from "react-icons/fi";
+import { FiSearch} from "react-icons/fi";
 
 const Banner = ({query, handleInputChange}) => {
 
