@@ -50,7 +50,7 @@ const CreateHouse = () => {
                 });
 
                 setTimeout(() => {
-                    navigate("/my-houses")
+                    navigate("/")
                     window.scrollTo(0, 0);
                 }, 2500)
             }

@@ -50,7 +50,7 @@ const MyHouses = () => {
     const handleSearch = () => {
         setIsLoading(true)
         if (searchText.length === 0) {
-            window.location.reload()
+            fetchHousesbyEmail()
         }
         const filter = houses.filter((house) => house.houseName.toLowerCase().includes(searchText.toLowerCase()))
         setHouses(filter)
