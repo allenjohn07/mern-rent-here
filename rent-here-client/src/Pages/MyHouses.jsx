@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { SpinningCircles } from 'react-loading-icons'
 import '../Pages/Styles/MyHouses.css'
 import Swal from 'sweetalert2'
+import { instance } from '../config/axios.js'
 
 
 const MyHouses = () => {
@@ -35,14 +36,17 @@ const MyHouses = () => {
 
     //fetchHouse function written outside but called inside the useEffect hook
     async function fetchHousesbyEmail() {
-        const response = await fetch(`https://mern-rent-here.onrender.com/my-houses/${email}`)
-        const data = await response.json()
-        setHouses(data)
+        const response = await instance.get(`/houses/my-houses/${email}`)
+        setHouses(response.data)
         setIsLoading(false)
     }
 
     useEffect(() => {
         setIsLoading(true)
+        setEmail(window.localStorage.getItem("email"))
+        if(!email){
+            return
+        }
         fetchHousesbyEmail()
     }, [email])
 
@@ -61,22 +65,10 @@ const MyHouses = () => {
     //function to delete a house
     const handleDelete = async (id) => {
         try {
-            const response = await fetch(`https://mern-rent-here.onrender.com/delete-house/${id}`, {
-                method: 'DELETE', // Ensure the correct HTTP method is used
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-
-            if (!response.ok) {
-                // Log the status and response text if not OK
-                const errorText = await response.text();
-                console.error(`Error: ${response.status} - ${response.statusText}\n${errorText}`);
-                return;
-            }
-
-            const data = await response.json();
-            if (data.acknowledged === true) {
+            const response = await instance.delete(`/houses/delete-house/${id}`)
+            console.log(response.data);
+            const data = response.data
+            if (data.message === "House deleted successfully") {
                 const Toast = Swal.mixin({
                     toast: true,
                     position: "top-end",
@@ -94,8 +86,7 @@ const MyHouses = () => {
                 });
 
                 setTimeout(() => {
-                    navigate("/my-houses")
-                    window.location.reload();
+                    window.location.replace("/my-houses")
                 }, 2500)
             }
 
@@ -110,10 +101,6 @@ const MyHouses = () => {
             <div className='my-houses-container mb-5'>
                 <h1 className='text-center py-4 mb-6'>All My Houses</h1>
                 <div className='search-box p-2 mb-2 text-center flex flex-wrap lg:gap-10 gap-2 justify-center'>
-                    <div className='flex items-center justify-center gap-2'>
-                        <p>Enter your email</p>
-                        <input onChange={(e) => setEmail(e.target.value)} type="text" name='email' id='email' className='py-1 pl-1 border rounded focus:outline-none email-box' placeholder='name@gmail.com' />
-                    </div>
                     <div className='flex items-center justify-center gap-2'>
                         <p>Enter your search</p>
                         <input onChange={(e) => setSearchText(e.target.value)} type="text" name='search' id='search' className='py-1 pl-1 border rounded focus:outline-none ml-1 search-box' placeholder='Enter home to search' />
@@ -130,7 +117,7 @@ const MyHouses = () => {
                             houses.length == 0 ? (
                                 <div className='text-center mb-10 text-[#FF0000]'>
                                     <h2>Nothing to display...</h2>
-                                    <p>Enter your posted email to search</p>
+                                    <p>Login to see your houses</p>
                                 </div>
                             ) : null
                         }

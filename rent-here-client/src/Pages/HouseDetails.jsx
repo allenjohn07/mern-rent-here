@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
 import PageHeader from '../Components/PageHeader'
+import { instance } from '../config/axios'
 
 const HouseDetails = () => {
     const { id } = useParams()
@@ -14,12 +15,8 @@ const HouseDetails = () => {
         const fetchHouse = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch(`https://mern-rent-here.onrender.com/all-houses/${id}`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                setHouse(data);
+                const response = await instance.get(`/houses/all-houses/${id}`)
+                setHouse(response.data);
             } catch (error) {
                 console.error('Fetch error: ', error);
                 // Optionally, set some error state here

@@ -5,6 +5,7 @@ import Houses from './Houses';
 import Sidebar from '../sidebar/Sidebar';
 import NewsLetter from '../Components/NewsLetter';
 import { SpinningCircles } from 'react-loading-icons';
+import { instance } from '../config/axios.js'
 
 const Home = () => {
   const [selectedCategory, setSelectedCategory] = useState({
@@ -26,12 +27,8 @@ const Home = () => {
     const fetchHouses = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('https://mern-rent-here.onrender.com/all-houses');
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const data = await response.json();
-        setHouses(data);
+        const response = await instance.get("/houses/all-houses");
+        setHouses(response.data);
       } catch (error) {
         console.error('Fetch error: ', error);
         // Optionally, set some error state here
@@ -50,7 +47,7 @@ const Home = () => {
 
   // Filter houses by houseName
   const filteredItems = houses.filter(house =>
-    house.houseName.toLowerCase().includes(query.toLowerCase())
+    house.location.toLowerCase().includes(query.toLowerCase())
   );
 
   const handleChange = (event) => {

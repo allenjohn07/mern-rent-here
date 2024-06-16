@@ -1,19 +1,19 @@
 import { createBrowserRouter } from 'react-router-dom';
-import App from '../App';
-import Home from '../Pages/Home';
-import CreateHouse from '../Pages/CreateHouse';
-import MyHouses from '../Pages/MyHouses';
-import RentEstimate from '../Pages/RentEstimate';
-import UpdateHouse from '../Pages/UpdateHouse';
-import HouseDetails from '../Pages/HouseDetails';
+import App from '../App.jsx';
+import Home from '../Pages/Home.jsx';
+import CreateHouse from '../Pages/CreateHouse.jsx';
+import MyHouses from '../Pages/MyHouses.jsx';
+import RentEstimate from '../Pages/RentEstimate.jsx';
+import UpdateHouse from '../Pages/UpdateHouse.jsx';
+import HouseDetails from '../Pages/HouseDetails.jsx';
+import Login from '../Pages/Login.jsx';
+import Register from '../Pages/Register.jsx';
+import { instance } from '../config/axios.js';
 
 const fetchHouseById = async ({ params }) => {
     try {
-        const response = await fetch(`https://mern-rent-here.onrender.com/all-houses/${params.id}`);
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        return response
+        const response = await instance(`/houses/all-houses/${params.id}`);
+        return response.data
     } catch (error) {
         console.error('Fetch error: ', error);
         throw error; // Let the router handle the error
@@ -49,6 +49,14 @@ const router = createBrowserRouter([
             {
                 path: "/house/:id",
                 element: <HouseDetails />,
+            },
+            {
+                path:"/auth/login",
+                element:<Login/>
+            },
+            {
+                path:"/auth/register",
+                element:<Register/>
             }
         ],
     },

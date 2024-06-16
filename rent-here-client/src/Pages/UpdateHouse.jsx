@@ -2,6 +2,7 @@ import React from 'react'
 import { useForm } from 'react-hook-form'
 import { useLoaderData, useNavigate, useParams } from 'react-router-dom'
 import Swal from 'sweetalert2'
+import { instance } from '../config/axios'
 
 const UpdateHouse = () => {
     const { id } = useParams()
@@ -19,22 +20,9 @@ const UpdateHouse = () => {
     //async function to post house
     async function postHouse(data) {
         try {
-            const response = await fetch(`https://mern-rent-here.onrender.com/update-house/${id}`, {
-                method: "PATCH",
-                headers: {
-                    'content-type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-
-            if (!response.ok) {
-                // Handle HTTP errors
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const result = await response.json()
-            console.log(result);
-            if (result.acknowledged === true) {
+            const response = await instance.put(`/houses/update-house/${id}`, data)
+            const result = response.data
+            if (result.message === "House updated successfully") {
                 const Toast = Swal.mixin({
                     toast: true,
                     position: "top-end",
@@ -81,6 +69,7 @@ const UpdateHouse = () => {
                             <input type="text" defaultValue={houseName}
                                 {...register("houseName")} className="create-house-input"
                             />
+                            {errors.houseName && <p className="text-red-500">{errors.houseName.message}</p>}
                         </div>
                         <div className='lg:w-1/2 w-full'>
                             <label className='block mb-2 text-lg'>House Type</label>
@@ -89,6 +78,7 @@ const UpdateHouse = () => {
                                 <option value="Bachelors">Bachelors</option>
                                 <option value="Family">Family</option>
                             </select>
+                            {errors.houseType && <p className="text-red-500">{errors.houseType.message}</p>}
                         </div>
                     </div>
                     {/* second row */}
@@ -99,6 +89,7 @@ const UpdateHouse = () => {
                                 {...register("minPrice")} className="create-house-input"
                                 defaultValue={minPrice}
                             />
+                            {errors.minPrice && <p className="text-red-500">{errors.minPrice.message}</p>}
                         </div>
                         <div className='lg:w-1/2 w-full'>
                             <label className='block mb-2 text-lg'>Maximum Rent</label>
@@ -106,6 +97,7 @@ const UpdateHouse = () => {
                                 {...register("maxPrice")} className="create-house-input"
                                 defaultValue={maxPrice}
                             />
+                            {errors.maxPrice && <p className="text-red-500">{errors.maxPrice.message}</p>}
                         </div>
                     </div>
                     {/* thrid row */}
@@ -117,6 +109,7 @@ const UpdateHouse = () => {
                                 <option value="Monthly">Monthly</option>
                                 <option value="Yearly">Yearly</option>
                             </select>
+                            {errors.priceType && <p className="text-red-500">{errors.priceType.message}</p>}
                         </div>
                         <div className='lg:w-1/2 w-full'>
                             <label className='block mb-2 text-lg'>House Location</label>
@@ -124,6 +117,7 @@ const UpdateHouse = () => {
                                 {...register("location")} className="create-house-input"
                                 defaultValue={location}
                             />
+                            {errors.location && <p className="text-red-500">{errors.location.message}</p>}
                         </div>
                     </div>
                     {/* fourth row */}
@@ -134,6 +128,7 @@ const UpdateHouse = () => {
                                 {...register("postingDate")} className="create-house-input"
                                 defaultValue={postingDate}
                             />
+                            {errors.postingDate && <p className="text-red-500">{errors.postingDate.message}</p>}
                         </div>
                         <div className='lg:w-1/2 w-full'>
                             <label className='block mb-2 text-lg'>House Area (sqft)</label>
@@ -141,6 +136,7 @@ const UpdateHouse = () => {
                                 {...register("area")} className="create-house-input"
                                 defaultValue={area}
                             />
+                            {errors.area && <p className="text-red-500">{errors.area.message}</p>}
                         </div>
                     </div>
                     {/* fifth row */}

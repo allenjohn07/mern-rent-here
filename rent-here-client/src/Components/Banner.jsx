@@ -10,7 +10,7 @@ const Banner = ({query, handleInputChange}) => {
             <form>
                 <div className='flex justify-center md:flex-row flex-col md:gap-2 gap-4'>
                     <div className='flex md:rounded-s-md rounded shadow-sm ring-1 ring-gray-300  md:w-1/2 w-full'>
-                        <input type="text" placeholder='What are you looking for ?' name='title' id='title'
+                        <input type="text" placeholder='Which is your preferred location ?' name='title' id='title'
                             className='block flex-1 border-0 bg-transparent py-1.5 pl-8 text-gray-900 placeholder:text-gray-400 focus:right-0 sm:text-sm sm-leading-6'
                             onChange={handleInputChange} value={query}
                         />

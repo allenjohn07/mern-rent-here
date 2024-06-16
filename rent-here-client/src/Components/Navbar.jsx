@@ -1,11 +1,29 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import '../App.css';
 import logo from '../assets/logo.png';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
+import Swal from 'sweetalert2';
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [email, setEmail] = useState("")
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top",
+        showConfirmButton: false,
+        timer: 2000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+        }
+    });
+
+    useEffect(() => {
+        setEmail(window.localStorage.getItem("email"))
+    }, [])
+
 
     const handleMenuToggler = () => {
         setIsMenuOpen(!isMenuOpen);
@@ -15,18 +33,32 @@ const Navbar = () => {
         { path: "/", title: "Start a Search" },
         { path: "/my-houses", title: "My Houses" },
         { path: "/rent-estimate", title: "Rent Estimate" },
-        { path: "/post-house", title: "Post a House" }
+        { path: "/post-house", title: "Post a House" },
     ];
+
+    const handleLogout = () => {
+        handleMenuToggler();
+        Toast.fire({
+            icon: "success",
+            title: "Logged out"
+        });
+        setTimeout(() => {
+            window.localStorage.clear();
+            window.location.replace("/");
+        }, 2000);
+    };
 
     return (
         <header className='max-w-screen-2xl container mx-auto xl:px-24 px-4'>
             <nav className='flex items-center justify-between py-6'>
-                <a href="/" className='flex items-center gap-2 text-2xl'>
-                    <img src={logo} alt="logo" width={40} />
-                    <span className='font-semibold'>Rent <span className='text-blue'>Here</span></span>
-                </a>
+                <Link to={"/"}>
+                    <div className='flex items-center gap-2 text-2xl'>
+                        <img src={logo} alt="logo" width={40} />
+                        <span className='font-semibold'>Rent <span className='text-blue'>Here</span></span>
+                    </div>
+                </Link>
                 {/* nav items for large devices */}
-                <ul className='hidden md:flex gap-12'>
+                <ul className='hidden md:flex gap-12 items-center'>
                     {
                         navItems.map(({ path, title }) => (
                             <li key={path} className='text-base text-primary'>
@@ -39,6 +71,14 @@ const Navbar = () => {
                             </li>
                         ))
                     }
+                    {
+                        email ? <button onClick={handleLogout} className='bg-blue text-white py-2 px-5 rounded font-semibold'>Logout</button> : <Link to={"/auth/login"}>
+                            <button className='bg-blue text-white py-2 px-5 rounded font-semibold'>
+                                Login
+                            </button>
+                        </Link>
+                    }
+
                 </ul>
                 {/* mobile menu */}
                 <div className='md:hidden block'>
@@ -63,6 +103,14 @@ const Navbar = () => {
                             </li>
                         ))
                     }
+                    {
+                        email ? <button onClick={handleLogout} className='bg-blue text-white py-1 px-2 rounded font-semibold mt-2'>Logout</button> : <Link to={"/auth/login"}>
+                            <button onClick={handleMenuToggler} className='bg-blue text-white py-1 px-2 rounded font-semibold mt-2'>
+                                Login
+                            </button>
+                        </Link>
+                    }
+
                 </ul>
             </div>
         </header>
