@@ -1,11 +1,9 @@
-// 
-
-
 import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { instance } from '../config/axios';
+import Cookies from 'universal-cookie';
 
 const CreateHouse = () => {
     const {
@@ -17,13 +15,14 @@ const CreateHouse = () => {
 
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
+    const cookies = new Cookies()
 
     useEffect(() => {
-        const mail = window.localStorage.getItem('email');
+        const mail = cookies.get("user")
         if (!mail) {
             return;
         }
-        setEmail(mail);
+        setEmail(mail.email);
     }, []);
 
     const Toast = Swal.mixin({

@@ -4,10 +4,15 @@ import logo from '../assets/logo.png';
 import { Link, NavLink } from 'react-router-dom';
 import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
 import Swal from 'sweetalert2';
+import Cookies from 'universal-cookie';
+import UserDropdown from './UserDropdown';
+import { Spinner } from '@nextui-org/react';
+
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    const [email, setEmail] = useState("")
+    const [isLoading, setIsLoading] = useState(true)
+    const [user, setUser] = useState("")
     const Toast = Swal.mixin({
         toast: true,
         position: "top",
@@ -19,9 +24,13 @@ const Navbar = () => {
             toast.onmouseleave = Swal.resumeTimer;
         }
     });
+    const cookies = new Cookies()
 
     useEffect(() => {
-        setEmail(window.localStorage.getItem("email"))
+        setUser(cookies.get("user"))
+        setTimeout(() => {
+            setIsLoading(false)
+        }, 500);
     }, [])
 
 
@@ -42,14 +51,14 @@ const Navbar = () => {
             icon: "success",
             title: "Logged out"
         });
+        cookies.remove('user')
         setTimeout(() => {
-            window.localStorage.clear();
             window.location.replace("/");
         }, 2000);
     };
 
     return (
-        <header className='max-w-screen-2xl container mx-auto xl:px-24 px-4'>
+        <header className='max-w-screen-2xl container mx-auto xl:px-24 px-4 shadow-sm'>
             <nav className='flex items-center justify-between py-6'>
                 <Link to={"/"}>
                     <div className='flex items-center gap-2 text-2xl'>
@@ -61,7 +70,7 @@ const Navbar = () => {
                 <ul className='hidden md:flex gap-12 items-center'>
                     {
                         navItems.map(({ path, title }) => (
-                            <li key={path} className='text-base text-primary'>
+                            <li key={path} className='text-base text-primary hover:scale-105 transition-all'>
                                 <NavLink
                                     to={path}
                                     className={({ isActive }) => isActive ? "active" : ""}
@@ -72,11 +81,13 @@ const Navbar = () => {
                         ))
                     }
                     {
-                        email ? <button onClick={handleLogout} className='bg-blue text-white py-2 px-5 rounded font-semibold'>Logout</button> : <Link to={"/auth/login"}>
-                            <button className='bg-blue text-white py-2 px-5 rounded font-semibold'>
-                                Login
-                            </button>
-                        </Link>
+                        isLoading ? <Spinner size="sm" className='h-8 w-8' /> :
+                            user ? <UserDropdown handleLogout={handleLogout} name={user.name} email={user.email} /> :
+                                <Link to={"/auth/login"}>
+                                    <button className='bg-blue text-white py-2 px-5 rounded font-semibold'>
+                                        Login
+                                    </button>
+                                </Link>
                     }
 
                 </ul>
@@ -104,11 +115,13 @@ const Navbar = () => {
                         ))
                     }
                     {
-                        email ? <button onClick={handleLogout} className='bg-blue text-white py-1 px-2 rounded font-semibold mt-2'>Logout</button> : <Link to={"/auth/login"}>
-                            <button onClick={handleMenuToggler} className='bg-blue text-white py-1 px-2 rounded font-semibold mt-2'>
-                                Login
-                            </button>
-                        </Link>
+                        isLoading ? <Spinner size="sm" className='h-8 w-8' /> :
+                            user ? <UserDropdown handleLogout={handleLogout} name={user.name} email={user.email} /> :
+                                <Link to={"/auth/login"}>
+                                    <button onClick={handleMenuToggler} className='bg-blue text-white py-1 px-2 rounded font-semibold mt-2'>
+                                        Login
+                                    </button>
+                                </Link>
                     }
 
                 </ul>

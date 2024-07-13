@@ -9,14 +9,17 @@ import HouseDetails from '../Pages/HouseDetails.jsx';
 import Login from '../Pages/Login.jsx';
 import Register from '../Pages/Register.jsx';
 import { instance } from '../config/axios.js';
+import EmailVerification from '../Pages/EmailVerification.jsx';
+import PhoneVerification from '../Pages/PhoneVerification.jsx';
+
 
 const fetchHouseById = async ({ params }) => {
     try {
         const response = await instance(`/houses/all-houses/${params.id}`);
-        return response.data
+        return response.data;
     } catch (error) {
         console.error('Fetch error: ', error);
-        throw error; // Let the router handle the error
+        throw error;
     }
 };
 
@@ -51,15 +54,24 @@ const router = createBrowserRouter([
                 element: <HouseDetails />,
             },
             {
-                path:"/auth/login",
-                element:<Login/>
+                path: "/auth/login",
+                element: <Login />,
             },
             {
-                path:"/auth/register",
-                element:<Register/>
+                path: "/auth/register",
+                element: <Register />,
+            },
+            {
+                path: "/verification/email",
+                element: <EmailVerification />,
+            },
+            {
+                path:"/verification/phone",
+                element:<PhoneVerification/>
             }
         ],
     },
 ]);
 
 export default router;
+

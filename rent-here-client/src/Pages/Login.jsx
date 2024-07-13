@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import { Input } from "@nextui-org/react";
-import { FaEye } from "react-icons/fa";
+import { Input, user } from "@nextui-org/react";
+import { FaEye, FaGoogle } from "react-icons/fa";
 import { FaEyeSlash } from "react-icons/fa6";
 import { Button } from "flowbite-react";
 import Swal from 'sweetalert2'
 import { instance } from '../config/axios.js'
 import { Link } from 'react-router-dom';
+import Cookies from 'universal-cookie';
+
 
 
 const Login = () => {
@@ -16,6 +18,12 @@ const Login = () => {
         email: '',
         password: ''
     })
+
+    const cookies = new Cookies()
+
+    useEffect(() => {
+        cookies.remove('user')
+    }, [])
 
     //funtion to login
     const handleLogin = async () => {
@@ -34,13 +42,12 @@ const Login = () => {
                 }
             });
             if (data.message === 'Login Successfull') {
+                cookies.set('user', { name: data.name, email: data.email })
                 Toast.fire({
                     icon: "success",
                     title: `${data.message}`
                 });
                 setTimeout(() => {
-                    window.localStorage.setItem("name", data.name)
-                    window.localStorage.setItem("email", data.email)
                     setLogin({
                         email: '',
                         password: ''
@@ -59,10 +66,14 @@ const Login = () => {
         }
     }
 
+    const handleGoogleLogin = () => {
+
+    }
+
 
     return (
         <div className='min-h-screen flex flex-col items-center lg:justify-center justify-start m-5'>
-            <div className='lg:w-1/3 w-full text-center'>
+            <div className='lg:w-1/3 w-full text-center mb-20'>
                 <div className='border flex flex-col gap-5 items-center justify-center rounded-3xl py-10 mb-5'>
                     <h1 className='text-2xl font-bold'>Welcome Back!</h1>
                     <Input
@@ -95,8 +106,14 @@ const Login = () => {
                         onChange={(e) => setLogin({ ...login, password: e.target.value })}
                     />
                     <Button onClick={handleLogin} gradientDuoTone="purpleToBlue">Login</Button>
+                    <button outline onClick={handleGoogleLogin} className="border py-2 px-4 rounded-md border-gray-500 hover:scale-105 transition-all hover: border-b-gray-950 hover:border-b-large">
+                        <div className="flex items-center gap-2">
+                            <FaGoogle />
+                            Sign In with Google
+                        </div>
+                    </button>
+                    <div className='flex items-center justify-center'>Don't have an account? &nbsp;<Link to={"/auth/register"}><p className='underline font-semibold'>Sign Up</p> </Link></div>
                 </div>
-                <div className='flex items-center justify-center'>Don't have an account? &nbsp;<Link to={"/auth/register"}><p className='underline font-semibold'>Sign Up</p> </Link></div>
             </div>
         </div>
     )

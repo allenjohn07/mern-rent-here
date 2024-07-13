@@ -115,6 +115,7 @@ import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 import { AuthRoutes } from './routes/AuthRoutes.js'
 import { HouseRoutes } from './routes/HouseRoutes.js'
+import { VerifyRoutes } from './routes/VerifyRoutes.js'
 dotenv.config()
 const port = process.env.PORT || 10000
 
@@ -126,8 +127,13 @@ const app = express()
 app.use(cors())
 app.use(express.json())
 
+app.get("/", (req, res) => {
+    res.send("Welcome")
+})
+
 app.use("/auth", AuthRoutes)
 app.use("/houses", HouseRoutes)
+app.use("/verification", VerifyRoutes)
 
 app.listen(port, () => console.log(`Server started at: ${port}`))
 

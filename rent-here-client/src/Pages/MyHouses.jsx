@@ -4,16 +4,20 @@ import { SpinningCircles } from 'react-loading-icons'
 import '../Pages/Styles/MyHouses.css'
 import Swal from 'sweetalert2'
 import { instance } from '../config/axios.js'
+import Cookies from 'universal-cookie'
+import { Spinner } from "@nextui-org/react";
 
 
 const MyHouses = () => {
 
-    const [email, setEmail] = useState("")
+    const [user, setUser] = useState("")
     const [houses, setHouses] = useState([])
     const [searchText, setSearchText] = useState("")
     const [isLoading, setIsLoading] = useState(true)
     const [currentPage, setCurrentPage] = useState(1)
     const itemsPerPage = 4;
+
+    const cookies = new Cookies()
 
     //for displaying only the first 4 houses in the table
     const indexOfFirstElement = (currentPage - 1) * itemsPerPage
@@ -35,20 +39,28 @@ const MyHouses = () => {
     }
 
     //fetchHouse function written outside but called inside the useEffect hook
-    async function fetchHousesbyEmail() {
+    async function fetchHousesbyEmail(email) {
         const response = await instance.get(`/houses/my-houses/${email}`)
         setHouses(response.data)
         setIsLoading(false)
     }
 
     useEffect(() => {
-        setIsLoading(true)
-        setEmail(window.localStorage.getItem("email"))
-        if(!email){
-            return
+        const userfromcookie = cookies.get('user')
+        if (userfromcookie) {
+            setUser(userfromcookie)
+        } else {
+            setIsLoading(false)
         }
-        fetchHousesbyEmail()
-    }, [email])
+    }, [])
+
+    useEffect(() => {
+        if (user && user.email) {
+            setTimeout(() => {
+                fetchHousesbyEmail(user.email);
+            }, 500);
+        }
+    }, [user]);
 
     //function to sort houses by the search input
     const handleSearch = () => {
@@ -114,12 +126,10 @@ const MyHouses = () => {
                 <div className="w-full xl:w-8/12 mb-12 xl:mb-0 px-4 mx-auto mt-5">
                     <div className="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded ">
                         {
-                            houses.length == 0 ? (
-                                <div className='text-center mb-10 text-[#FF0000]'>
-                                    <h2>Nothing to display...</h2>
-                                    <p>Login to see your houses</p>
-                                </div>
-                            ) : null
+                            !user && !isLoading ? <div className='text-center mb-10 text-[#FF0000]'>
+                                <h2>Nothing to display...</h2>
+                                <p>Login to see your houses</p>
+                            </div> : user && isLoading ? <div className='flex items-center justify-center flex-row gap-3'><Spinner size="sm" /> <span>Loading..</span></div> : null
                         }
                         <div className="rounded-t mb-0 px-4 py-3 border-0 table-container">
                             <div className="flex flex-wrap items-center">
@@ -156,41 +166,33 @@ const MyHouses = () => {
                                         </th>
                                     </tr>
                                 </thead>
-
-                                {
-                                    isLoading ? (
-                                        <div className='flex items-center justify-center'><SpinningCircles /></div>
-                                    ) : (
-                                        <tbody>
-                                            {currentHouses.map((house, index) => (
-                                                <tr key={index}>
-                                                    <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left text-blueGray-700 ">
-                                                        {index + 1}
-                                                    </th>
-                                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
-                                                        {house.houseName}
-                                                    </td>
-                                                    <td className="border-t-0 px-6 align-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                        {house.houseType}
-                                                    </td>
-                                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                        <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
-                                                        ${house.minPrice}-${house.maxPrice}
-                                                    </td>
-                                                    <td className="border-t-0 px-5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                        <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
-                                                        <Link to={`/edit-house/${house?._id}`}><button className='bg-blue rounded py-1 px-3 text-white'>Edit</button></Link>
-                                                    </td>
-                                                    <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
-                                                        <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
-                                                        <button onClick={() => handleDelete(house._id)} className='bg-red-700 py-1 px-3 text-white rounded'>Delete</button>
-                                                    </td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    )
-                                }
-
+                                <tbody>
+                                    {currentHouses.map((house, index) => (
+                                        <tr key={index}>
+                                            <th className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 text-left text-blueGray-700 ">
+                                                {index + 1}
+                                            </th>
+                                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4 ">
+                                                {house.houseName}
+                                            </td>
+                                            <td className="border-t-0 px-6 align-center border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                                {house.houseType}
+                                            </td>
+                                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                                <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
+                                                ${house.minPrice}-${house.maxPrice}
+                                            </td>
+                                            <td className="border-t-0 px-5 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                                <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
+                                                <Link to={`/edit-house/${house?._id}`}><button className='bg-blue rounded py-1 px-3 text-white'>Edit</button></Link>
+                                            </td>
+                                            <td className="border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs whitespace-nowrap p-4">
+                                                <i className="fas fa-arrow-up text-emerald-500 mr-4"></i>
+                                                <button onClick={() => handleDelete(house._id)} className='bg-red-700 py-1 px-3 text-white rounded'>Delete</button>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
                             </table>
                         </div>
                     </div>

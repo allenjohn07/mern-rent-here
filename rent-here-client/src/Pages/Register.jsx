@@ -62,7 +62,7 @@ const Register = () => {
 
     return (
         <div className='min-h-screen gap-5 flex flex-col items-center lg:justify-center justify-start m-5'>
-            <div className='border lg:w-1/3 w-full flex flex-col gap-5 items-center justify-center rounded-3xl py-10'>
+            <div className='border lg:w-1/3 w-full flex flex-col gap-5 items-center justify-center rounded-3xl py-10 mb-20'>
                 <div>
                     <h1 className='text-2xl font-bold'>Create your account here.</h1>
                     <p>Enter your details below.</p>
@@ -108,8 +108,8 @@ const Register = () => {
                     onChange={(e) => setRegister({ ...register, password: e.target.value })}
                 />
                 <Button onClick={handleSignUp} gradientDuoTone="purpleToBlue">Register</Button>
-            </div>
             <div className='flex items-center justify-center'>Already have an account? &nbsp;<Link to={"/auth/login"}><p className='underline font-semibold'>Login</p></Link> </div>
+            </div>
         </div>
     )
 }

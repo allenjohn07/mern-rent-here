@@ -1,6 +1,6 @@
 import { House } from "../models/HouseModel.js";
-import mongoose from 'mongoose';  // Import mongoose
-const { ObjectId } = mongoose.Types;  // Extract ObjectId
+import mongoose from 'mongoose';
+const { ObjectId } = mongoose.Types; 
 
 //to get all houses
 export const getAllHouses = async (req, res) => {
@@ -16,7 +16,7 @@ export const getAllHouses = async (req, res) => {
 export const postHouse = async (req, res) => {
     try {
         const body = req.body;
-        body.createAt = new Date();  // Ensure this matches your schema
+        body.createAt = new Date(); 
         const result = await House.create(body);
         if (result._id) {
             return res.status(201).send({
@@ -93,7 +93,7 @@ export const deleteHouse = async (req, res) => {
         const house = await House.find()
         return res.status(200).send({house, message:'House deleted successfully'})
     } catch (error) {
-        console.error(error);  // Log the error for debugging purposes
+        console.error(error);
         return res.status(500).send({
             message: "An error occurred while deleting the house",
             error
@@ -116,7 +116,7 @@ export const updateHouse = async (req, res) => {
         }
         return res.status(200).send({ updatedHouse, message: 'House updated successfully' });
     } catch (error) {
-        console.error(error);  // Log the error for debugging purposes
+        console.error(error);
         return res.status(500).send({
             message: "An error occurred while updating the house",
             error
