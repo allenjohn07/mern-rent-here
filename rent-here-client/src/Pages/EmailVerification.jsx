@@ -2,17 +2,18 @@ import React, { useEffect, useRef, useState } from 'react';
 import { InputOtp } from 'primereact/inputotp';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'flowbite-react';
-import Cookies from 'universal-cookie'
 import { Spinner } from '@nextui-org/react';
 import { instance } from '../config/axios.js'
+import { Toast } from 'primereact/toast';
+import { FaTelegramPlane } from "react-icons/fa";
 
 const EmailVerification = () => {
     const [token, setTokens] = useState();
     const [user, setUser] = useState()
     const [isloading, setIsLoading] = useState(true)
 
-    const cookies = new Cookies()
     const navigate = useNavigate()
+    const toast = useRef(null);
 
     const customInput = ({ events, props }) => {
         return <><input {...events} {...props} type="text" className="custom-otp-input-sample" />
@@ -23,9 +24,9 @@ const EmailVerification = () => {
     };
 
     useEffect(() => {
-        const userfromcookie = cookies.get('user')
+        const userfromcookie = window.localStorage.getItem('user')
         if (userfromcookie) {
-            setUser(userfromcookie)
+            setUser(JSON.parse(userfromcookie))
             setIsLoading(false)
         } else {
             setIsLoading(false)
@@ -55,10 +56,9 @@ const EmailVerification = () => {
             alert("Invalid OTP")
             return console.log("invalid otp");
         }
-        // console.log(token);
         setIsLoading(true)
         try {
-            const response = await instance.post("/verification/email/verify",{email: user.email, token})
+            const response = await instance.post("/verification/email/verify", { email: user.email, token })
             if (response.data.message === "Verfied Successfully") {
                 setTokens("")
                 navigate("/")
@@ -77,8 +77,32 @@ const EmailVerification = () => {
         navigate("/")
     }
 
+    const handleSendEmail = () => {
+        toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'> <FaTelegramPlane/> <span>Sending Email</span></div>, life: 3000 });
+        setIsLoading(true)
+        setTimeout(async () => {
+            try {
+                const response = await instance.post("/verification/email/send", { name: user.name, email: user.email })
+                if (response.data.message === 'Email sent successfully') {4
+                    setIsLoading(false)
+                    toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
+                    return 
+                } else {
+                    setIsLoading(false)
+                    toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
+                    navigate("/")
+                }
+            } catch (error) {
+                console.log(error);
+                setIsLoading(false)
+                toast.current.show({ severity: 'error', life: 3000 });
+            }
+        }, 2000);
+    }
+
     return (
         <div className="flex items-start lg:items-center mt-20 lg:mt-0 justify-center h-screen">
+            <Toast ref={toast} position="bottom-right" />
             <style scoped>
                 {`
                     .custom-otp-input-sample {
@@ -125,17 +149,23 @@ const EmailVerification = () => {
                         <span className='font-semibold text-gray-700'>Please wait...</span>
                     </div>
                     :
-                    <div className="flex flex-col items-center">
-                        <p className="font-bold text-xl mb-2">Verify your Email</p>
-                        <p className="text-color-secondary block mb-5">Please enter the code sent to your email.</p>
-                        <InputOtp value={token} onChange={(e) => setTokens(e.value)} length={6} inputTemplate={customInput} style={{ gap: 0 }} />
-                        <div className="flex justify-between mt-5 self-stretch">
-                            <Button onClick={handleResend} gradientDuoTone="tealToLime">Resend Code</Button>
-                            <Button onClick={handleSubmit} gradientDuoTone="tealToLime">Submit Code</Button>
+                    <div className="flex flex-col items-center mt-20 lg:mt-0 justify-start lg:justify-center h-screen gap-20">
+                        <div className='flex flex-col items-center gap-5 justify-start lg:justify-center'>
+                            <p className="font-bold text-xl mb-2 text-center">Click the button to send mail</p>
+                            <Button onClick={handleSendEmail} className='rounded-xl' gradientDuoTone="purpleToBlue">Send mail</Button>
+                        </div>
+                        <div className='flex flex-col items-center'>
+                            <p className="font-bold text-xl mb-2">Verify your Email</p>
+                            <p className="text-color-secondary block mb-5">Please enter the code sent to your email.</p>
+                            <InputOtp value={token} onChange={(e) => setTokens(e.value)} length={6} inputTemplate={customInput} style={{ gap: 0 }} />
+                            <div className="flex justify-between mt-5 self-stretch">
+                                <Button onClick={handleResend} gradientDuoTone="tealToLime">Resend Code</Button>
+                                <Button onClick={handleSubmit} gradientDuoTone="tealToLime">Submit Code</Button>
+                            </div>
                         </div>
                     </div>
             }
-            <div className='absolute bottom-10 right-10'>
+            <div className='absolute bottom-[-100px] right-5 lg:bottom-10 lg:right-10 '>
                 <Button onClick={handleGoBack} gradientDuoTone="tealToLime">Go back</Button>
             </div>
         </div>

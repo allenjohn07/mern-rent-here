@@ -4,7 +4,6 @@ import { Badge } from "flowbite-react";
 import { instance } from '../config/axios';
 import { useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast';
-import { FaTelegramPlane } from "react-icons/fa";
 import userLogo from '../assets/userLogo.png'
 
 
@@ -33,22 +32,7 @@ const UserDropdown = ({ handleLogout, name, email }) => {
     const navigate = useNavigate()
 
     const handleEmailSend = () => {
-        toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'> <FaTelegramPlane/> <span>Sending Email</span></div>, life: 3000 });
-        setTimeout(async () => {
-            try {
-                const response = await instance.post("/verification/email/send", { name, email })
-                if (response.data.message === 'Email sent successfully') {
-                    toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
-                    navigate("/verification/email")
-                    return 
-                } else {
-                    toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
-                }
-            } catch (error) {
-                console.log(error);
-                toast.current.show({ severity: 'error', life: 3000 });
-            }
-        }, 2000);
+        navigate("/verification/email")
     }
 
 

@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from 'react';
 import { InputOtp } from 'primereact/inputotp';
 import { useNavigate } from 'react-router-dom';
 import { Button } from 'flowbite-react';
-import Cookies from 'universal-cookie'
 import { Spinner } from '@nextui-org/react';
 import { InputText } from "primereact/inputtext";
 import { Toast } from 'primereact/toast';
@@ -14,7 +13,6 @@ const PhoneVerification = () => {
     const [isloading, setIsLoading] = useState(true)
     const [phone, setPhone] = useState()
 
-    const cookies = new Cookies()
     const navigate = useNavigate()
     const toast = useRef(null);
 
@@ -27,9 +25,9 @@ const PhoneVerification = () => {
     };
 
     useEffect(() => {
-        const userfromcookie = cookies.get('user')
+        const userfromcookie = window.localStorage.getItem('user')
         if (userfromcookie) {
-            setUser(userfromcookie)
+            setUser(JSON.parse(userfromcookie))
             setIsLoading(false)
         } else {
             setIsLoading(false)
