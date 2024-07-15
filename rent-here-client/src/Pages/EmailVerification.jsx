@@ -78,15 +78,15 @@ const EmailVerification = () => {
     }
 
     const handleSendEmail = () => {
-        toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'> <FaTelegramPlane/> <span>Sending Email</span></div>, life: 3000 });
+        toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'> <FaTelegramPlane /> <span>Sending Email</span></div>, life: 3000 });
         setIsLoading(true)
         setTimeout(async () => {
             try {
                 const response = await instance.post("/verification/email/send", { name: user.name, email: user.email })
-                if (response.data.message === 'Email sent successfully') {4
+                if (response.data.message === 'Email sent successfully') {
                     setIsLoading(false)
                     toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
-                    return 
+                    return
                 } else {
                     setIsLoading(false)
                     toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });

@@ -6,6 +6,8 @@ import { Spinner } from '@nextui-org/react';
 import { InputText } from "primereact/inputtext";
 import { Toast } from 'primereact/toast';
 import { instance } from '../config/axios';
+import { FaTelegramPlane } from "react-icons/fa";
+
 
 const PhoneVerification = () => {
     const [token, setTokens] = useState();
@@ -39,7 +41,7 @@ const PhoneVerification = () => {
             toast.current.show({ severity: 'error', detail: 'Invalid Phone Number', life: 3000 });
             return
         }
-        console.log(phone);
+        toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'> <FaTelegramPlane /> <span>Sending OTP</span></div>, life: 3000 });
         try {
             const response = await instance.post("/verification/phone/send", { phone, email: user.email })
             if (response.data.message === "SMS sent successfully") {
