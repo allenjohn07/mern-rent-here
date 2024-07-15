@@ -32,6 +32,10 @@ const UserDropdown = ({ handleLogout, name, email, menuToggler }) => {
     const navigate = useNavigate()
 
     const handleEmailSend = () => {
+        if(user?.isEmailVerified){
+            toast.current.show({ severity: 'success', detail: "Email already verified", life: 3000 });
+            return 
+        }
         navigate("/verification/email")
         menuToggler()
     }

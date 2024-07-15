@@ -8,97 +8,110 @@ import { Toast } from 'primereact/toast';
 import { FaTelegramPlane } from "react-icons/fa";
 
 const EmailVerification = () => {
-    const [token, setTokens] = useState();
-    const [user, setUser] = useState()
-    const [isloading, setIsLoading] = useState(true)
+    const [token, setTokens] = useState('');
+    const [user, setUser] = useState();
+    const [isLoading, setIsLoading] = useState(true);
 
-    const navigate = useNavigate()
+    const navigate = useNavigate();
     const toast = useRef(null);
 
-    const customInput = ({ events, props }) => {
-        return <><input {...events} {...props} type="text" className="custom-otp-input-sample" />
-            {props.id === 2 && <div className="px-3">
-                <i className="pi pi-minus" />
-            </div>}
+    const customInput = ({ events, props }) => (
+        <>
+            <input {...events} {...props} type="text" className="custom-otp-input-sample" />
+            {props.id === 2 && (
+                <div className="px-3">
+                    <i className="pi pi-minus" />
+                </div>
+            )}
         </>
-    };
+    );
 
     useEffect(() => {
-        const userfromcookie = window.localStorage.getItem('user')
-        if (userfromcookie) {
-            setUser(JSON.parse(userfromcookie))
-            setIsLoading(false)
-        } else {
-            setIsLoading(false)
+        const userFromCookie = JSON.parse(window.localStorage.getItem('user'));
+        if (userFromCookie) {
+            setUser(userFromCookie);
         }
-    }, [])
+        setIsLoading(false);
+    }, []);
 
+    console.log(user);
 
     const handleResend = async () => {
-        setIsLoading(true)
-        try {
-            const response = await instance.post("/verification/email/send", { name: user.name, email: user.email })
-            if (response.data.message === 'Email sent successfully') {
-                setIsLoading(false)
-                return alert(`${response.data.message}`)
-            }
-            alert(`${response.data.message}`)
-            setIsLoading(false)
-            navigate("/")
-        } catch (error) {
-            console.log(error);
-            setIsLoading(false)
+        if (!user || !user.name || !user.email) {
+            return alert("User information is missing.");
         }
-    }
+
+        setIsLoading(true);
+        try {
+            const response = await instance.post("/verification/email/send", { name: user.name, email: user.email });
+            if (response.data.message === 'Email sent successfully') {
+                setIsLoading(false);
+                return alert(response.data.message);
+            }
+            alert(response.data.message);
+            setIsLoading(false);
+            navigate("/");
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+        }
+    };
 
     const handleSubmit = async () => {
         if (!token || token.length !== 6) {
-            alert("Invalid OTP")
-            return console.log("invalid otp");
+            alert("Invalid OTP");
+            return;
         }
-        setIsLoading(true)
+
+        if (!user || !user.email) {
+            return alert("User information is missing.");
+        }
+
+        setIsLoading(true);
         try {
-            const response = await instance.post("/verification/email/verify", { email: user.email, token })
-            if (response.data.message === "Verfied Successfully") {
-                setTokens("")
-                navigate("/")
-                setIsLoading(false)
-                return alert(`${response.data.message}`)
+            const response = await instance.post("/verification/email/verify", { email: user.email, token });
+            if (response.data.message === "Verified Successfully") {
+                setTokens('');
+                navigate("/");
+                setIsLoading(false);
+                return alert(response.data.message);
             }
-            setIsLoading(false)
-            return alert(`${response.data.message}`)
+            setIsLoading(false);
+            return alert(response.data.message);
         } catch (error) {
-            console.log(error);
-            setIsLoading(false)
+            console.error(error);
+            setIsLoading(false);
         }
-    }
+    };
 
     const handleGoBack = () => {
-        navigate("/")
-    }
+        navigate("/");
+    };
 
-    const handleSendEmail = () => {
-        toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'> <FaTelegramPlane /> <span>Sending Email</span></div>, life: 3000 });
-        setIsLoading(true)
-        setTimeout(async () => {
-            try {
-                const response = await instance.post("/verification/email/send", { name: user.name, email: user.email })
-                if (response.data.message === 'Email sent successfully') {
-                    setIsLoading(false)
-                    toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
-                    return
-                } else {
-                    setIsLoading(false)
-                    toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
-                    navigate("/")
-                }
-            } catch (error) {
-                console.log(error);
-                setIsLoading(false)
-                toast.current.show({ severity: 'error', life: 3000 });
+    const handleSendEmail = async () => {
+        if (!user || !user.name || !user.email) {
+            return alert("User information is missing.");
+        }
+
+        toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'><FaTelegramPlane /><span>Sending Email</span></div>, life: 3000 });
+        setIsLoading(true);
+        try {
+            const response = await instance.post("/verification/email/send", { name: user.name, email: user.email });
+            if (response.data.message === 'Email sent successfully') {
+                setIsLoading(false);
+                toast.current.show({ severity: 'success', detail: response.data.message, life: 3000 });
+                return;
+            } else {
+                setIsLoading(false);
+                toast.current.show({ severity: 'warn', detail: response.data.message, life: 3000 });
+                navigate("/");
             }
-        }, 2000);
-    }
+        } catch (error) {
+            console.error(error);
+            setIsLoading(false);
+            toast.current.show({ severity: 'error', detail: error.message, life: 3000 });
+        }
+    };
 
     return (
         <div className="flex items-start lg:items-center mt-20 lg:mt-0 justify-center h-screen">
@@ -143,7 +156,7 @@ const EmailVerification = () => {
                 `}
             </style>
             {
-                isloading ?
+                isLoading ?
                     <div className="flex items-center space-x-2">
                         <Spinner size='sm' />
                         <span className='font-semibold text-gray-700'>Please wait...</span>
@@ -169,7 +182,7 @@ const EmailVerification = () => {
                 <Button onClick={handleGoBack} gradientDuoTone="tealToLime">Go back</Button>
             </div>
         </div>
-    )
-}
+    );
+};
 
-export default EmailVerification
+export default EmailVerification;

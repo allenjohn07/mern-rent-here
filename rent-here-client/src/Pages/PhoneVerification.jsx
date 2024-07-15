@@ -27,14 +27,13 @@ const PhoneVerification = () => {
     };
 
     useEffect(() => {
-        const userfromcookie = window.localStorage.getItem('user')
+        const userfromcookie = window.localStorage.getItem('user');
         if (userfromcookie) {
-            setUser(JSON.parse(userfromcookie))
-            setIsLoading(false)
-        } else {
-            setIsLoading(false)
+            setUser(JSON.parse(userfromcookie));
         }
-    }, [])
+        setIsLoading(false);
+    }, []);
+
 
     const handleSendOTP = async () => {
         if (!phone || phone.length !== 13) {
@@ -43,26 +42,24 @@ const PhoneVerification = () => {
         }
         toast.current.show({ severity: 'contrast', detail: <div className='flex items-center gap-2'> <FaTelegramPlane /> <span>Sending OTP</span></div>, life: 3000 });
         try {
-            const response = await instance.post("/verification/phone/send", { phone, email: user.email })
+            const response = await instance.post("/verification/phone/send", { phone, email: user.email });
             if (response.data.message === "SMS sent successfully") {
                 toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
-                setPhone("")
-                return
+                return;
             }
-            console.log(response.data.message);
+            toast.current.show({ severity: 'error', detail: response.data.message, life: 3000 });
         } catch (error) {
             console.log(error);
-            toast.current.show({ severity: 'error', detail: error, life: 3000 });
+            toast.current.show({ severity: 'error', detail: error.message, life: 3000 });
         }
     }
 
 
     const handleResend = async () => {
-        handleSendOTP()
+        await handleSendOTP()
     }
 
     const handleSubmit = async () => {
-
         if (!token || token.length !== 6) {
             alert("Invalid OTP")
             return console.log("invalid otp");
@@ -70,7 +67,7 @@ const PhoneVerification = () => {
         console.log(token);
         try {
             const response = await instance.post("/verification/phone/verify", { email: user.email, token })
-            if (response.data.message === "Verfied Successfully"){
+            if (response.data.message === "Verfied Successfully") {
                 setTokens("")
                 toast.current.show({ severity: 'success', detail: `${response.data.message}`, life: 3000 });
                 navigate("/")
