@@ -85,7 +85,7 @@ const Navbar = () => {
                     }
                     {
                         isLoading ? <Spinner size="sm" className='h-8 w-8' /> :
-                            user ? <UserDropdown handleLogout={handleLogout} name={user.name} email={user.email} /> :
+                            user ? <UserDropdown menuToggler={handleMenuToggler} handleLogout={handleLogout} name={user.name} email={user.email} /> :
                                 <button onClick={handleLoginNavigate} className='bg-blue text-white py-2 px-5 rounded font-semibold'>
                                     Login
                                 </button>
@@ -117,7 +117,7 @@ const Navbar = () => {
                     }
                     {
                         isLoading ? <Spinner size="sm" className='h-8 w-8' /> :
-                            user ? <UserDropdown handleLogout={handleLogout} name={user.name} email={user.email} /> :
+                            user ? <UserDropdown menuToggler={handleMenuToggler} handleLogout={handleLogout} name={user.name} email={user.email} /> :
                                 <Link to={"/auth/login"}>
                                     <button onClick={handleMenuToggler} className='bg-blue text-white py-1 px-2 rounded font-semibold mt-2'>
                                         Login

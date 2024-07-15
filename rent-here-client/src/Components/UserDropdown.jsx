@@ -7,7 +7,7 @@ import { Toast } from 'primereact/toast';
 import userLogo from '../assets/userLogo.png'
 
 
-const UserDropdown = ({ handleLogout, name, email }) => {
+const UserDropdown = ({ handleLogout, name, email, menuToggler }) => {
 
     const [user, setUser] = useState()
     const toast = useRef(null);
@@ -33,6 +33,7 @@ const UserDropdown = ({ handleLogout, name, email }) => {
 
     const handleEmailSend = () => {
         navigate("/verification/email")
+        menuToggler()
     }
 
 
@@ -42,6 +43,7 @@ const UserDropdown = ({ handleLogout, name, email }) => {
             return 
         }
         navigate("/verification/phone")
+        menuToggler()
     }
 
 
