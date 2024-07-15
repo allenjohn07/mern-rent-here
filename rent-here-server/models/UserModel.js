@@ -25,6 +25,9 @@ const userSchema = mongoose.Schema({
   isPhoneVerified: {
     type: Boolean,
   },
+  imageURL: {
+    type: String
+  }
 });
 
 export const User = mongoose.model("users", userSchema);

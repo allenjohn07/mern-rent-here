@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import '../App.css';
 import logo from '../assets/logo.png';
-import { Link, NavLink } from 'react-router-dom';
+import { Link, NavLink, useNavigate } from 'react-router-dom';
 import { FaBarsStaggered, FaXmark } from "react-icons/fa6";
 import Swal from 'sweetalert2';
-import Cookies from 'universal-cookie';
 import UserDropdown from './UserDropdown';
 import { Spinner } from '@nextui-org/react';
-
 
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -24,10 +22,10 @@ const Navbar = () => {
             toast.onmouseleave = Swal.resumeTimer;
         }
     });
-    const cookies = new Cookies()
+    const navigate = useNavigate()
 
     useEffect(() => {
-        setUser(cookies.get("user"))
+        setUser(JSON.parse(window.localStorage.getItem("user")))
         setTimeout(() => {
             setIsLoading(false)
         }, 500);
@@ -51,11 +49,16 @@ const Navbar = () => {
             icon: "success",
             title: "Logged out"
         });
-        cookies.remove('user')
+        window.localStorage.removeItem('user')
         setTimeout(() => {
             window.location.replace("/");
         }, 2000);
     };
+
+    const handleLoginNavigate = () => {
+        navigate("/auth/login")
+        window.localStorage.removeItem('user')
+    }
 
     return (
         <header className='max-w-screen-2xl container mx-auto xl:px-24 px-4 shadow-sm'>
@@ -83,11 +86,9 @@ const Navbar = () => {
                     {
                         isLoading ? <Spinner size="sm" className='h-8 w-8' /> :
                             user ? <UserDropdown handleLogout={handleLogout} name={user.name} email={user.email} /> :
-                                <Link to={"/auth/login"}>
-                                    <button className='bg-blue text-white py-2 px-5 rounded font-semibold'>
-                                        Login
-                                    </button>
-                                </Link>
+                                <button onClick={handleLoginNavigate} className='bg-blue text-white py-2 px-5 rounded font-semibold'>
+                                    Login
+                                </button>
                     }
 
                 </ul>

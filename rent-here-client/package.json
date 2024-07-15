@@ -11,9 +11,12 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.4.1",
+    "@react-oauth/google": "^0.12.1",
     "axios": "^1.7.2",
+    "dotenv": "^16.4.5",
     "flowbite-react": "^0.9.0",
     "framer-motion": "^11.2.10",
+    "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
     "match-sorter": "^6.3.4",
     "primereact": "^10.7.0",

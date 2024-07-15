@@ -3,21 +3,21 @@ import bcrypt from "bcrypt";
 
 //to get the user
 export const getUser = async (req, res) => {
-  const {email} = req.body;
+  const { email } = req.body;
   try {
-    const currentUser = await User.findOne({email})
-    if(!currentUser){
+    const currentUser = await User.findOne({ email });
+    if (!currentUser) {
       return res.json({
-        message: "User does not exist"
-      })
+        message: "User does not exist",
+      });
     }
     res.json({
-      user: currentUser
-    })
+      user: currentUser,
+    });
   } catch (error) {
     console.log(error);
   }
-}
+};
 
 //register
 export const registerUser = async (req, res) => {
@@ -47,6 +47,7 @@ export const registerUser = async (req, res) => {
       isPhoneVerified: false,
       EmailOtp: "",
       PhoneOtp: "",
+      imageURL: "",
     });
     res.json({
       message: "Registered Successfully!",
@@ -90,5 +91,45 @@ export const loginUser = async (req, res) => {
     });
   } catch (error) {
     console.error(error);
+  }
+};
+
+export const GoogleLogin = async (req, res) => {
+  const { name, email, imageURL } = req.body;
+  try {
+    const user = await User.findOne({ email });
+    if (user) {
+      const updatedUser = await User.updateOne(
+        { email },
+        {
+          $set: {
+            imageURL,
+          },
+        }
+      );
+      return res.json({
+        message: "User exist!",
+      });
+    }
+
+    const hashedPassword = await bcrypt.hash("GoogleLogin123456789!@#$%^&*(",10)
+    const newUser = await User.create({
+      name,
+      email,
+      password: hashedPassword,
+      isEmailVerified: false,
+      isPhoneVerified: false,
+      EmailOtp: "",
+      PhoneOtp: "",
+      imageURL,
+    });
+    return res.json({
+      message: "Registered Successfully!",
+    });
+  } catch (error) {
+    console.log(error);
+    return res.json({
+      message: error,
+    });
   }
 };

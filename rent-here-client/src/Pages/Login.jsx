@@ -6,9 +6,8 @@ import { Button } from "flowbite-react";
 import Swal from 'sweetalert2'
 import { instance } from '../config/axios.js'
 import { Link } from 'react-router-dom';
-import Cookies from 'universal-cookie';
-
-
+import { useGoogleLogin } from '@react-oauth/google';
+import axios from 'axios';
 
 const Login = () => {
 
@@ -19,10 +18,12 @@ const Login = () => {
         password: ''
     })
 
-    const cookies = new Cookies()
 
     useEffect(() => {
-        cookies.remove('user')
+        const userFromCookies = window.localStorage.getItem('user')
+        if (userFromCookies) {
+            window.localStorage.removeItem('user')
+        }
     }, [])
 
     //funtion to login
@@ -42,7 +43,7 @@ const Login = () => {
                 }
             });
             if (data.message === 'Login Successfull') {
-                cookies.set('user', { name: data.name, email: data.email })
+                window.localStorage.setItem('user',JSON.stringify({name:data.name, email: data.email}))
                 Toast.fire({
                     icon: "success",
                     title: `${data.message}`
@@ -66,9 +67,56 @@ const Login = () => {
         }
     }
 
-    const handleGoogleLogin = () => {
 
-    }
+    const GoogleLogin = useGoogleLogin({
+        onSuccess: async tokenResponse => {
+            // fetching userinfo can be done on the client or the server
+            const userInfo = await axios
+                .get('https://www.googleapis.com/oauth2/v3/userinfo', {
+                    headers: { Authorization: `Bearer ${tokenResponse.access_token}` },
+                })
+                .then(res => res.data);
+
+            const response = await instance.post("/auth/google/login", {
+                name: userInfo.name,
+                email: userInfo.email,
+                imageURL: userInfo.picture
+            })
+            console.log(response.data.message);
+            const data = response.data
+            const Toast = Swal.mixin({
+                toast: true,
+                position: "top",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.onmouseenter = Swal.stopTimer;
+                    toast.onmouseleave = Swal.resumeTimer;
+                }
+            });
+            if (data.message === 'User exist!' || data.message === 'Registered Successfully!') {
+                window.localStorage.setItem('user', JSON.stringify({ name: userInfo.name, email: userInfo.email }))
+                Toast.fire({
+                    icon: "success",
+                    title: "Login Successfull"
+                });
+                setTimeout(() => {
+                    setLogin({
+                        email: '',
+                        password: ''
+                    })
+                    window.location.replace('/')
+                }, 2000)
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: `${data.message}`
+                })
+            }
+
+        },
+    });
 
 
     return (
@@ -106,7 +154,7 @@ const Login = () => {
                         onChange={(e) => setLogin({ ...login, password: e.target.value })}
                     />
                     <Button onClick={handleLogin} gradientDuoTone="purpleToBlue">Login</Button>
-                    <button outline onClick={handleGoogleLogin} className="border py-2 px-4 rounded-md border-gray-500 hover:scale-105 transition-all hover: border-b-gray-950 hover:border-b-large">
+                    <button onClick={() => GoogleLogin()} outline className="border py-2 px-4 rounded-md border-gray-500 hover:scale-105 transition-all hover: border-b-gray-950 hover:border-b-large">
                         <div className="flex items-center gap-2">
                             <FaGoogle />
                             Sign In with Google

@@ -5,7 +5,7 @@ import { instance } from '../config/axios';
 import { useNavigate } from 'react-router-dom'
 import { Toast } from 'primereact/toast';
 import { FaTelegramPlane } from "react-icons/fa";
-
+import userLogo from '../assets/userLogo.png'
 
 
 const UserDropdown = ({ handleLogout, name, email }) => {
@@ -67,7 +67,7 @@ const UserDropdown = ({ handleLogout, name, email }) => {
             <Toast ref={toast} position="bottom-right" />
             <Dropdown>
                 <DropdownTrigger>
-                    <Avatar className='mt-2 lg:mt-0 h-8 w-8 cursor-pointer hover:scale-105 transition-all' showFallback src='https://images.unsplash.com/broken' />
+                    <Avatar className='mt-2 lg:mt-0 h-8 w-8 cursor-pointer hover:scale-105 transition-all' showFallback src={user?.imageURL ? `${user.imageURL}` : `${userLogo}`} />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="Static Actions">
                     <DropdownItem textValue='user' color='none' key="user">
@@ -76,7 +76,7 @@ const UserDropdown = ({ handleLogout, name, email }) => {
                             <span className='text-xs'>{email}</span>
                         </div>
                     </DropdownItem>
-                    <DropdownItem key="copy">
+                    <DropdownItem textValue='verifyEmail' key="copy">
                         <div onClick={handleEmailSend} className='flex justify-between'>
                             Verify Email
                             <Badge color={user?.isEmailVerified ? "success" : "failure"}>
@@ -86,7 +86,7 @@ const UserDropdown = ({ handleLogout, name, email }) => {
                             </Badge>
                         </div>
                     </DropdownItem>
-                    <DropdownItem key="edit">
+                    <DropdownItem textValue='verifyPhone' key="edit">
                         <div onClick={handlePhoneSend} className='flex justify-between'>
                             Verify Phone
                             <Badge color={user?.isPhoneVerified ? "success" : "failure"}>
@@ -96,7 +96,7 @@ const UserDropdown = ({ handleLogout, name, email }) => {
                             </Badge>
                         </div>
                     </DropdownItem>
-                    <DropdownItem onClick={handleLogout} key="delete" className="text-danger" color="danger">
+                    <DropdownItem textValue='logout' onClick={handleLogout} key="delete" className="text-danger" color="danger">
                         Logout
                     </DropdownItem>
                 </DropdownMenu>
